@@ -1,0 +1,4 @@
+-H "content-type: application/json"
+-H "accept: */*"
+-H "origin: https://www.youtube.com"
+-H "x-origin: https://www.youtube.com"
