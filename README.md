@@ -1,15 +1,20 @@
+# About
+
+This script allows parents to block their children's Youtube channels using [supervised account](https://support.google.com/youtubekids/answer/13887963?hl=ja) .
+I created this script because I'm tired to manually blocking multiple Youtube channels for several kids accounts.
+
 # setup
 
 1) You need to grab the authorization token and cookie value from Chrome Devtools.
-Make sure to add these to your request headers like this:
+Make sure to add these to `conf_secret.txt` like this:
 
-```conf_secret.txt
+```bash
 -H "authorization: XXX"
 -H "cookie: XXX"
 ```
 
-2) you need to find the `kidGaiaId` within the payload of the block response.
-Take that ID and replace the value to `kids_ids.txt` .
+2) you need to find the `kidGaiaId` within the payload of the block response at `www.youtube.com/youtubei/v1/kids/update_blacklist` .
+Take that ID(s) and replace the value to `kids_ids.txt` .
 
 # executon
 
