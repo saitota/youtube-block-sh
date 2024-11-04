@@ -1,0 +1,35 @@
+curl 'https://www.youtube.com/youtubei/v1/kids/update_blacklist?prettyPrint=false' \
+  -H 'accept: */*' \
+  -H 'accept-language: xx' \
+  -H 'authorization: xx' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'cookie: VISITOR_INFO1_LIVE=xxx' \
+  -H 'dnt: 1' \
+  -H 'origin: https://www.youtube.com' \
+  -H 'pragma: no-cache' \
+  -H 'priority: u=1, i' \
+  -H 'referer: https://www.youtube.com/@xxx' \
+  -H 'sec-ch-ua: "xx' \
+  -H 'sec-ch-ua-arch: "xx"' \
+  -H 'sec-ch-ua-bitness: "64"' \
+  -H 'sec-ch-ua-form-factors: "Desktop"' \
+  -H 'sec-ch-ua-full-version: "xx"' \
+  -H 'sec-ch-ua-full-version-list: "xx"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-model: ""' \
+  -H 'sec-ch-ua-platform: "xx"' \
+  -H 'sec-ch-ua-platform-version: "xx"' \
+  -H 'sec-ch-ua-wow64: ?0' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: same-origin' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: xx' \
+  -H 'x-client-data: xx' \
+  -H 'x-goog-authuser: 0' \
+  -H 'x-goog-visitor-id: xx' \
+  -H 'x-origin: https://www.youtube.com' \
+  -H 'x-youtube-bootstrap-logged-in: true' \
+  -H 'x-youtube-client-name: 1' \
+  -H 'x-youtube-client-version: 2.20241101.01.00' \
+  --data-raw '{"context":{"client":{"hl":"ja","gl":"JP","remoteHost":"xx...","clientName":"WEB","clientVersion":"2.20241101.01.00"}},"items":[{"externalChannelId":"xxxx","action":"BLOCKLIST_ACTION_BLOCK"}],"kidGaiaId":"00000000000"}' \

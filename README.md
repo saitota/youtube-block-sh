@@ -13,6 +13,8 @@ Make sure to add these to `conf_secret.txt` like this:
 -H "cookie: XXX"
 ```
 
+or paste `Copy as cURL` from Chrome Devtools to curl.txt and run `./gen_conf_secret.sh`  to generate `conf_secret.txt` .
+
 2) you need to find the `kidGaiaId` within the payload of the block response at `www.youtube.com/youtubei/v1/kids/update_blacklist` .
 Take that ID(s) and replace the value to `kids_ids.txt` .
 
