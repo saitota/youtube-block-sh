@@ -20,9 +20,17 @@ You can get these values from Chrome DevTools:
 - Find the request to `www.youtube.com/youtubei/v1/kids/update_blacklist`
 - Look for the `authorization` and `cookie` headers in the request
 
-Tip: You can also paste `Copy as cURL` from Chrome DevTools to curl.txt and run `./gen_export.sh` to generate export commands for these values. You can then use these commands to set the environment variables:
+Tip: You can also paste `Copy as cURL` from Chrome DevTools to curl.txt and use the following steps:
 
 ```bash
+# 1. Save the Chrome DevTools 'Copy as cURL' output to curl.txt
+# 2. Generate environment variables using gen_export.sh
+./gen_export.sh
+# Output example:
+# export YOUTUBE_AUTH="SAPISIDHASH ..."
+# export YOUTUBE_COOKIE="YSC=...; VISITOR_INFO1_LIVE=...; ..."
+
+# 3. Set the environment variables
 source <(./gen_export.sh)
 ```
 
@@ -31,7 +39,6 @@ Take that ID(s) and replace the value to `kids_ids.txt` .
 
 # execution
 
-環境変数を設定した後、以下のコマンドで実行します：
 
 ```bash
 # Single channel block

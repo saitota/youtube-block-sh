@@ -3,13 +3,14 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 type UpdateBlacklistRequest struct {
@@ -21,29 +22,9 @@ type UpdateBlacklistRequest struct {
 	} `json:"context"`
 	Items []struct {
 		ExternalChannelID string `json:"externalChannelId"`
-		Action            string `json:"action"`
+		Action           string `json:"action"`
 	} `json:"items"`
 	KidGaiaID string `json:"kidGaiaId"`
-}
-
-// parseArgs は引数を解析し、kidIDとchannelNameを返します
-func parseArgs() (kidID string, channelName string, err error) {
-	flag.StringVar(&kidID, "kid-id", "", "Kid's ID (required)")
-	flag.StringVar(&channelName, "channel-name", "", "Channel name (required)")
-	flag.Parse()
-
-	if kidID == "" {
-		return "", "", fmt.Errorf("kid-id is required")
-	}
-
-	if channelName == "" {
-		return "", "", fmt.Errorf("channel-name is required")
-	}
-
-	// @から始まる場合は削除
-	channelName = strings.TrimPrefix(channelName, "@")
-
-	return kidID, channelName, nil
 }
 
 func getChannelID(channelName string) (string, error) {
@@ -67,22 +48,6 @@ func getChannelID(channelName string) (string, error) {
 	return matches[1], nil
 }
 
-// processChannel は与えられたパラメータに基づいてチャンネル情報を処理します
-func processChannel(kidID, channelName string) error {
-	fmt.Printf("channelName %s\n", channelName)
-	channelID, err := getChannelID(channelName)
-	if err != nil {
-		return fmt.Errorf("failed to get channel ID: %w", err)
-	}
-
-	fmt.Printf("channelId %s\n", channelID)
-	if err := blockChannel(channelID, kidID); err != nil {
-		return fmt.Errorf("failed to block channel: %w", err)
-	}
-
-	return nil
-}
-
 func blockChannel(channelID, kidID string) error {
 	req := UpdateBlacklistRequest{
 		Context: struct {
@@ -101,11 +66,11 @@ func blockChannel(channelID, kidID string) error {
 		},
 		Items: []struct {
 			ExternalChannelID string `json:"externalChannelId"`
-			Action            string `json:"action"`
+			Action           string `json:"action"`
 		}{
 			{
 				ExternalChannelID: channelID,
-				Action:            "BLOCKLIST_ACTION_BLOCK",
+				Action:           "BLOCKLIST_ACTION_BLOCK",
 			},
 		},
 		KidGaiaID: kidID,
@@ -122,7 +87,6 @@ func blockChannel(channelID, kidID string) error {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
 
-	// 環境変数からヘッダー値を取得
 	auth := os.Getenv("YOUTUBE_AUTH")
 	if auth == "" {
 		return fmt.Errorf("YOUTUBE_AUTH environment variable is not set")
@@ -133,7 +97,6 @@ func blockChannel(channelID, kidID string) error {
 		return fmt.Errorf("YOUTUBE_COOKIE environment variable is not set")
 	}
 
-	// ヘッダーの設定
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", auth)
 	request.Header.Set("Cookie", cookie)
@@ -153,18 +116,62 @@ func blockChannel(channelID, kidID string) error {
 	return nil
 }
 
+var (
+	flags = struct {
+		kidID      *cli.StringFlag
+		channelName *cli.StringFlag
+	}{
+		kidID: &cli.StringFlag{
+			Name:     "kid-id",
+			Aliases:  []string{"k"},
+			Required: true,
+			Usage:    "Kid's Gaia ID",
+		},
+		channelName: &cli.StringFlag{
+			Name:     "channel-name",
+			Aliases:  []string{"c"},
+			Required: true,
+			Usage:    "YouTube channel name",
+		},
+	}
+)
+
+func New() *cli.App {
+	app := cli.NewApp()
+	app.Name = "youtube-block"
+	app.Usage = "YouTube channel blocking tool for supervised accounts"
+	app.Action = func(c *cli.Context) error {
+		kidID := c.String("kid-id")
+		channelName := c.String("channel-name")
+
+		// @から始まる場合は削除
+		channelName = strings.TrimPrefix(channelName, "@")
+
+		fmt.Printf("channelName %s\n", channelName)
+		channelID, err := getChannelID(channelName)
+		if err != nil {
+			return fmt.Errorf("failed to get channel ID: %w", err)
+		}
+
+		fmt.Printf("channelId %s\n", channelID)
+		if err := blockChannel(channelID, kidID); err != nil {
+			return fmt.Errorf("failed to block channel: %w", err)
+		}
+
+		fmt.Printf("done, blocked channel %s for kid %s\n", channelName, kidID)
+		return nil
+	}
+
+	app.Flags = []cli.Flag{
+		flags.kidID,
+		flags.channelName,
+	}
+
+	return app
+}
+
 func main() {
-	kidID, channelName, err := parseArgs()
-	if err != nil {
-		fmt.Printf("Error: %v\n", err)
-		flag.Usage()
-		os.Exit(1)
+	if err := New().Run(os.Args); err != nil {
+		panic(err)
 	}
-
-	if err := processChannel(kidID, channelName); err != nil {
-		fmt.Printf("Error: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Printf("done, blocked channel %s for kid %s\n", channelName, kidID)
 }
