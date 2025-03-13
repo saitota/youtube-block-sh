@@ -22,7 +22,7 @@ type UpdateBlacklistRequest struct {
 	} `json:"context"`
 	Items []struct {
 		ExternalChannelID string `json:"externalChannelId"`
-		Action           string `json:"action"`
+		Action            string `json:"action"`
 	} `json:"items"`
 	KidGaiaID string `json:"kidGaiaId"`
 }
@@ -66,43 +66,43 @@ func blockChannel(channelID, kidID string) error {
 		},
 		Items: []struct {
 			ExternalChannelID string `json:"externalChannelId"`
-			Action           string `json:"action"`
+			Action            string `json:"action"`
 		}{
 			{
 				ExternalChannelID: channelID,
-				Action:           "BLOCKLIST_ACTION_BLOCK",
+				Action:            "BLOCKLIST_ACTION_BLOCK",
 			},
 		},
 		KidGaiaID: kidID,
 	}
-
 	jsonData, err := json.Marshal(req)
 	if err != nil {
 		return fmt.Errorf("failed to marshal request: %w", err)
 	}
-
 	client := &http.Client{}
 	request, err := http.NewRequest("POST", "https://www.youtube.com/youtubei/v1/kids/update_blacklist?prettyPrint=false", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return fmt.Errorf("failed to create request: %w", err)
 	}
-
 	auth := os.Getenv("YOUTUBE_AUTH")
 	if auth == "" {
 		return fmt.Errorf("YOUTUBE_AUTH environment variable is not set")
 	}
-
 	cookie := os.Getenv("YOUTUBE_COOKIE")
 	if cookie == "" {
 		return fmt.Errorf("YOUTUBE_COOKIE environment variable is not set")
 	}
+	fmt.Println("Len YOUTUBE_AUTH:", len(strings.TrimSpace(auth)))
+	fmt.Println("Len YOUTUBE_COOKIE:", len(strings.TrimSpace(cookie)))
 
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", auth)
-	request.Header.Set("Cookie", cookie)
+	request.Header.Set("Authorization", strings.TrimSpace(auth))
+	request.Header.Set("Cookie", strings.TrimSpace(cookie))
 	request.Header.Set("X-Goog-AuthUser", "0")
 	request.Header.Set("X-Origin", "https://www.youtube.com")
-
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("X-Goog-AuthUser", "0")
+	request.Header.Set("X-Origin", "https://www.youtube.com")
 	resp, err := client.Do(request)
 	if err != nil {
 		return fmt.Errorf("failed to send request: %w", err)
@@ -118,7 +118,7 @@ func blockChannel(channelID, kidID string) error {
 
 var (
 	flags = struct {
-		kidID      *cli.StringFlag
+		kidID       *cli.StringFlag
 		channelName *cli.StringFlag
 	}{
 		kidID: &cli.StringFlag{
@@ -158,7 +158,7 @@ func New() *cli.App {
 			return fmt.Errorf("failed to block channel: %w", err)
 		}
 
-		fmt.Printf("done, blocked channel %s for kid %s\n", channelName, kidID)
+		fmt.Printf("done, blocked channel @%s for kid %s\n", channelName, kidID)
 		return nil
 	}
 
