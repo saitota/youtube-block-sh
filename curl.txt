@@ -1,0 +1,13 @@
+curl 'https://www.youtube.com/youtubei/v1/kids/update_blacklist?prettyPrint=false' \
+  -H 'accept: */*' \
+  -H 'accept-language: ja,en-US;q=0.9,en;q=0.8' \
+  -H 'authorization: SAPxxxxxx' \
+  -H 'content-type: application/json' \
+  -b 'YSC=Dxxx' \
+  -H 'dnt: 1' \
+  -H 'origin: https://www.youtube.com' \
+  -H 'priority: u=1, i' \
+  -H 'referer: https://www.youtube.com/@xxx' \
+  -H 'x-youtube-client-name: 1' \
+  -H 'x-youtube-client-version: xxx' \
+  --data-raw '{"context":xxxxxx"kidGaiaId":"112067128557644567707"}'
