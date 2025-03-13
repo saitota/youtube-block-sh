@@ -112,7 +112,6 @@ func blockChannel(channelID, kidID string) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("request failed with status: %d", resp.StatusCode)
 	}
-
 	return nil
 }
 
@@ -142,26 +141,19 @@ func New() *cli.App {
 	app.Usage = "YouTube channel blocking tool for supervised accounts"
 	app.Action = func(c *cli.Context) error {
 		kidID := c.String("kid-id")
-		channelName := c.String("channel-name")
-
-		// @から始まる場合は削除
-		channelName = strings.TrimPrefix(channelName, "@")
-
+		channelName := strings.TrimPrefix(c.String("channel-name"), "@")
 		fmt.Printf("channelName %s\n", channelName)
 		channelID, err := getChannelID(channelName)
 		if err != nil {
 			return fmt.Errorf("failed to get channel ID: %w", err)
 		}
-
 		fmt.Printf("channelId %s\n", channelID)
 		if err := blockChannel(channelID, kidID); err != nil {
 			return fmt.Errorf("failed to block channel: %w", err)
 		}
-
 		fmt.Printf("done, blocked channel @%s for kid %s\n", channelName, kidID)
 		return nil
 	}
-
 	app.Flags = []cli.Flag{
 		flags.kidID,
 		flags.channelName,
