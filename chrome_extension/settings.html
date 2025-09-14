@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>YouTube Kids Channel Blocker Settings</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube Kids Channel Blocker</h1>
+    
+    <section class="section">
+      <h2>Kids Account Management</h2>
+      <div class="input-group">
+        <input type="text" id="kidIdInput" placeholder="Enter Kids ID" />
+        <button id="addKidBtn">Add</button>
+      </div>
+      <ul id="kidsList" class="kids-list"></ul>
+    </section>
+    
+    <section class="section">
+      <h2>Authentication Headers</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="parentModeCheck" />
+        <label for="parentModeCheck">Parent's Chrome (auto-fetch headers)</label>
+      </div>
+      <div class="input-group">
+        <label for="authInput">Authorization:</label>
+        <input type="text" id="authInput" placeholder="SAPISIDHASH..." />
+      </div>
+      <div class="input-group">
+        <label for="cookieInput">Cookie:</label>
+        <input type="text" id="cookieInput" placeholder="YSC=..." />
+      </div>
+      <button id="saveAuthBtn">Save Headers</button>
+    </section>
+    
+    <section class="section">
+      <h2>Activity Logs</h2>
+      <div id="logsList" class="logs-list"></div>
+    </section>
+  </div>
+  
+  <script src="storage.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>
